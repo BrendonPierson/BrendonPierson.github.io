@@ -1,0 +1,23 @@
+.sidebar-header {
+  text-align: center;
+  font-size: 1.3rem;
+}
+
+.menu-links {
+  list-style-type: none;
+}
+
+.social-icons-list {
+  list-style-type: none;
+  li {
+    display: inline;
+    a {
+      color: $lightorangeColor;
+      transition: color ease-in-out .5s;
+      &:hover {
+        color: $darkColor;
+        transition: color ease-in-out .5s;
+      }
+    }
+  }
+}

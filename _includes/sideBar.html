@@ -1,0 +1,23 @@
+<div class="sidebar-header">
+  <h1>Brendon Pierson</h1>
+  <h5>{ Software Developer }</h5>
+</div>
+<ul class="menu-links">
+  {% for my_page in site.pages %}
+    {% if my_page.title %}
+    <li><a href="{{ my_page.url | prepend: site.baseurl }}">{{ my_page.title }}</a></li>
+    {% endif %}
+  {% endfor %}
+</ul>
+
+<ul class="social-icons-list">
+  <li>
+    <a href="https://github.com/BrendonPierson"><i class="fa fa-github fa-3x"></i></a>
+  </li>
+  <li>
+    <a href="https://www.linkedin.com/in/brendonpierson"><i class="fa fa-linkedin-square fa-3x"></i></a>
+  </li>
+  <li>
+    <a href="https://twitter.com/Biersons"><i class="fa fa-twitter fa-3x"></i></a>
+  </li>
+</ul>
