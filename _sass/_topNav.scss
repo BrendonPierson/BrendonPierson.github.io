@@ -25,3 +25,17 @@
     font-size: 1.3em;
   }
 }
+
+.topNav-links-div-show{
+  position: fixed:
+  top:-220px;
+  left: 0;
+  transition: all 2s linear;
+}
+
+.topNav-links-div-hide{
+  position: fixed:
+  top:0;
+  left: 0;
+  transition: all 2s linear;
+}
