@@ -6,10 +6,10 @@
   </div>
 
   <div class="flex-item">
-    <div class="flex-row menu-links">
+    <div class="sidebar-column menu-links">
       {% for my_page in site.pages %}
         {% if my_page.title %}
-        <div class="flex-item">
+        <div class="sidebar-nav-link">
           <a href="{{ my_page.url | prepend: site.baseurl }}">{{ my_page.title }}</a>
         </div>
         {% endif %}

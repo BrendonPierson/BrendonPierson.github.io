@@ -1,0 +1,27 @@
+.topNav {
+  width: 100%;
+  min-height: 40px;
+  background-color: $darkBlue;
+  color: $red;  
+  i:hover{
+    cursor: pointer;
+  }
+}
+
+.nav-item {
+  padding: 2% 4%;
+}
+
+.topNav-links-div {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  text-align: center;
+  a {
+    display: block;
+    color: $red;
+    margin: 10px 0;
+    text-decoration: none;
+    font-size: 1.3em;
+  }
+}
