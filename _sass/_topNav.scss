@@ -12,11 +12,33 @@
   padding: 2% 4%;
 }
 
+#hamburger{
+  &.open {
+    transform: rotate(-90deg);
+    transition: transform .6s;
+  }
+  &.close {
+    transform: rotate(0deg);
+    transition: transform .6s;
+  }
+}
+
+#mobileNav{
+  &.open {
+    display: flex;
+  }
+  &.close {
+    display: none;
+  }
+}
+
 .topNav-links-div {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
   text-align: center;
+  background-color: $darkBlue;
+  width: 100%;
   a {
     display: block;
     color: $red;
@@ -24,18 +46,4 @@
     text-decoration: none;
     font-size: 1.3em;
   }
-}
-
-.topNav-links-div-show{
-  position: fixed:
-  top:-220px;
-  left: 0;
-  transition: all 2s linear;
-}
-
-.topNav-links-div-hide{
-  position: fixed:
-  top:0;
-  left: 0;
-  transition: all 2s linear;
 }
