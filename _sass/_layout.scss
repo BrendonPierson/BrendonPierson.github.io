@@ -2,11 +2,12 @@ html, body{
   height: 100%;
   padding: 0;
   margin: 0;
-  color: $darkColor;
+  color: #000;
+  box-sizing: border-box;
 }
 
-a {
-  color: $darkColor;
+.topNav {
+  display: none;
 }
 
 .flex-container {
@@ -18,25 +19,48 @@ a {
   margin: 0;
 }
 
-.sidebar {
-  padding: 0;
-  margin: 0;
-  height: 100%;
+.flex-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.flex-row-center {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;  
+  justify-content: center;
+}
+
+.flex-item {
   flex-grow: 1;
-  background-color: $orangeColor;
+}
+
+.sidebar {
+  box-sizing: border-box;
+  padding: 2%;
+  margin: 0;
+  float: left;
+  height: 100%;
+  width: 30%;
+  background-color: $darkBlue;
 }
 
 .main-content {
-  padding: 0;
+  box-sizing: border-box;
+  float: right;
+  width:  70%;
+  height: 100%;
+  padding: 2%;
   margin: 0;
-  flex-grow: 5;
-  background-color: $greyColor;
+  background-color: $white;
 }
 
 
 
-// $darkColor: rgb(51, 37, 50);
-// $lighterdarkColor: rgb(100, 77, 82);
-// $orangeColor: rgb(247, 122, 82);
-// $lightorangeColor: rgb(255, 151, 79);
-// $greyColor: rgb(164, 154, 135);
+// $darkBlue: #2C3E50;
+// $red: #E74C3C;
+// $white: #ECF0F1;
+// $lightBlue: #3498DB;
+// $midBlue: #2980B9;

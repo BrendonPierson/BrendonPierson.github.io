@@ -6,14 +6,20 @@
   <body>
 
     <!-- {% include header.html %} -->
-
-    <div class="flex-container">
+    <!-- <div class="main-wrapper"> -->
+    <div class="sidebar"> {% include sideBar.html %}</div>
+    <div class="main-content">
+      <div class="topNav">Top Nav</div>
+      {{ content }} 
+    </div>
+    <!-- </div> --> 
+    <!-- <div class="flex-container">
       <div class="sidebar"> {% include sideBar.html %}</div>
       <div class="main-content">
         {{ content }} 
       </div>
     </div>
-
+ -->
     <!-- {% include footer.html %} -->
     {% include scripts.html %}
 
