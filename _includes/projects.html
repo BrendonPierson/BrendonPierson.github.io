@@ -1,0 +1,10 @@
+<ul>
+  {% for project in site.projects %}
+  <li>
+      <h3><a href="{{project.website}}">{{project.title}}</a></h3>
+      <img src="{{project.image}}">
+      <p>{{ project.description }}</p>
+      <p><a id="source-code" href="{{project.github}}">Source Code</a></p>
+  </li>
+  {% endfor %}
+</ul>

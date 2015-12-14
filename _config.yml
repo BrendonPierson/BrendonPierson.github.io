@@ -18,3 +18,7 @@ github_username:  brendonpierson
 markdown: kramdown
 kramdown:
   input: GFM
+
+collections:
+  - projects
+  - technologies
