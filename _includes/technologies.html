@@ -1,0 +1,10 @@
+<div class="grid-wrap-3">
+{% for tech in site.technologies %}
+  <div class="tech-list-item">
+    <a href="{{tech.link}}">
+      <h3>{{tech.title}}</h3>
+      <img src="{{tech.image}}" alt="{{tech.title}}">
+    </a>
+  </div>
+{% endfor %}
+</div>

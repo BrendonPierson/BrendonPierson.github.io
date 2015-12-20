@@ -9,3 +9,10 @@
     display: block;
   }
 }
+
+@media screen and (max-width: 400px) {
+  .tech-list-item {
+    width: 90%;
+  }
+}
+
