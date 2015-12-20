@@ -21,6 +21,11 @@
   }
   a {
     text-decoration: none;
-    color: $red;
+    color: $lightBlue;
+    transition: color ease-in-out .3s;
+    &:hover{
+      color: $red;
+      transition: color ease-in-out .3s;
+    }
   }
 }
