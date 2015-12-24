@@ -6,6 +6,9 @@
 
 .about-div-text {
   padding: 0 10%;
+  h4 {
+    font-style: italic;
+  }
 }
 .firstLetter {
   float: left; color: $red; font-size: 75px; line-height: 60px; padding-top: 4px; padding-right: 8px; padding-left: 3px; font-family: Georgia; 
