@@ -1,10 +1,19 @@
-<ul>
+<div class="project-container">
   {% for project in site.projects %}
-  <li>
-      <h3><a href="{{project.website}}">{{project.title}}</a></h3>
-      <img src="{{project.image}}">
-      <p>{{ project.description }}</p>
-      <p><a id="source-code" href="{{project.github}}">Source Code</a></p>
-  </li>
+  <div class="project">
+    <div class="project-title-image">
+      <a href="{{project.website}}">
+        <h2>{{project.title}}</h2>
+        <img src="{{project.image}}">
+      </a>
+    </div>
+    <div class="project-text">
+      <p><strong>Description: </strong>{{ project.description }}</p>
+      {% if project.techsUsed != null %}
+        <p><strong>Technologies used:</strong> {{ project.techsUsed }}</p>
+      {% endif %}
+      <p class="source-code"><a href="{{project.github}}"><strong>Source Code on Github </strong><i class="fa fa-github fa-2x"></i></a></p>
+    </div>
+  </div>
   {% endfor %}
-</ul>
+</div>
