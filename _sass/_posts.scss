@@ -1,0 +1,8 @@
+.post-title {
+  text-decoration: none;
+  transition: all .3s;
+  &:hover {
+    text-decoration: underline;
+    transition: all .3s;
+  }
+}
