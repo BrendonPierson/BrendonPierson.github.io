@@ -3,6 +3,7 @@ $red: #E74C3C;
 $white: #ECF0F1;
 $lightBlue: #3498DB;
 $midBlue: #2980B9;
+$lighterBlue: lighten($lightBlue, 43%);
 /**
  * Set `margin-bottom` to maintain vertical rhythm
  */
@@ -54,7 +55,7 @@ code {
     font-size: 15px;
     border: 1px solid $grey-color-light;
     border-radius: 3px;
-    background-color: lighten($lightBlue, 43%);
+    background-color: $lighterBlue;
 }
 
 code {
