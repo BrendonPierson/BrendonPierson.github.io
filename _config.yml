@@ -22,3 +22,5 @@ kramdown:
 collections:
   - projects
   - technologies
+
+exclude: [vendor]
