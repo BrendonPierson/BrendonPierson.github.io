@@ -30,6 +30,15 @@
       transition: all .5s;
     }
   }
+  @media screen and (max-width: 730px) {
+    display: none;
+  }
+}
+
+.show-small {
+  @media screen and (min-width: 730px) {
+    display: none;
+  }
 }
 
 .project-text {
