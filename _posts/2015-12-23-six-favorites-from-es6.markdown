@@ -7,13 +7,8 @@ categories: javascript es6
 
 Playing around with react has recently led to a lot of contact with ES6 aka EcmaScript6 aka ES 2015.  Here is a quick introduction to my six favorite features.  The easiest way to play around with ES6 is with [babel](http://babeljs.io/repl/). To actually run the code try [Firefox developer edition's console](https://www.mozilla.org/en-US/firefox/developer/). 
 
-I'll be covering:
-1. Block scoping with
-2. Arrow functions
-3. Spread Operators
-4. Object Property Shorthand
-5. Modules
-6. Object Destructuring
+I'll be briefly covering block scoping, arrow functions, spread operators, object property shorthand, modules, and object destructuring
+
 
 <h3>1. Block Scoping with let and const</h3> JavaScript `var`s are scoped to their containing function.  `let` and `const` are scoped to their containing block.  Block scoping cleans up some global pollution and makes things like using multiple loops a breeze. `const` is also immutable which is great if there is a variable you want to make sure doesn't change.  
 
