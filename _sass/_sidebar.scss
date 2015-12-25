@@ -16,33 +16,33 @@
 
   h1 {
     text-shadow: 0px 3px 2px #000;
+    font-family: $headerText;
   }
 }
 
 .menu-links {
   text-align: center;
   a {
-    color: $lightBlue;
+    color: $midBlue;
     font-size: 1.5em;
     display: inline-block;
     padding: 5px;
     margin: 0 0 10px;
     text-align: center;
     text-decoration: none;
-    border: 1px solid $lightBlue;
     border-radius: 4%;
     transition: background-color  ease-in-out .3s;
     transition: color ease-in-out .3s;
     &:hover {
-      background-color: $red;
-      color: $darkBlue;
+      border-bottom: 1px solid $lightBlue;
+      // background-color: $red;
+      color: $lighterBlue;
       transition: background-color ease-in-out .3s;
       transition: color ease-in-out .3s;
       transform:scale(1.2,1.2);
     }
   }
 }
-
 
 .social-icons-list {
   margin-top: 10%;

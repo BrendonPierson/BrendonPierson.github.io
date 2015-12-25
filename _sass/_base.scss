@@ -4,6 +4,9 @@ $white: #ECF0F1;
 $lightBlue: #3498DB;
 $midBlue: #2980B9;
 $lighterBlue: lighten($lightBlue, 43%);
+$bodyText: 'Sura', serif; 
+$headerText: 'Chonburi', serif;
+
 /**
  * Set `margin-bottom` to maintain vertical rhythm
  */
@@ -14,6 +17,10 @@ ul, ol, dl, figure,
     margin-bottom: $spacing-unit / 2;
 }
 
+.page-title {
+  font-family: $headerText;
+  color: $darkBlue;
+}
 
 /**
  * Figures
@@ -50,13 +57,6 @@ blockquote {
 /**
  * Code formatting
  */
-pre,
-code {
-    font-size: 15px;
-    border: 1px solid $grey-color-light;
-    border-radius: 3px;
-    background-color: $lighterBlue;
-}
 
 code {
     padding: 1px 5px;
@@ -75,11 +75,9 @@ pre {
 
 
 a {
-  // text-decoration: none;
   color: #000;
   transition: all .3s;
   &:hover {
-    // text-decoration: underline;
     color: $red;
     transition: all .3s;
   }

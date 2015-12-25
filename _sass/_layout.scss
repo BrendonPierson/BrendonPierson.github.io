@@ -5,6 +5,7 @@ html, body{
   // color: $darkBlue;
   box-sizing: border-box;
   background-color: $white;
+  font-family: $bodyText;
 }
 
 .topNav {
@@ -59,11 +60,3 @@ html, body{
   margin: 0;
   background-color: $white;
 }
-
-
-
-// $darkBlue: #2C3E50;
-// $red: #E74C3C;
-// $white: #ECF0F1;
-// $lightBlue: #3498DB;
-// $midBlue: #2980B9;

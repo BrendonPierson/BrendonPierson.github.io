@@ -3,22 +3,27 @@ layout: page
 title: Posts
 ---
 
-
-<div class="home">
-
-  <ul class="post-list">
+  <div class="home">
     {% for post in site.posts %}
-      <li>
-        <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
+      <div class="post-preview">
 
-        <h2>
-          <a class="post-title" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
-        </h2>
-        {{ post.excerpt }}
-      </li>
+        <div class="post-title">
+          <a class="headline" href="{{ post.url | prepend: site.baseurl }}">
+            <h2>
+              {{ post.title }}
+            </h2>
+            <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
+          </a>
+        </div>
+
+        <div class="excerpt">
+          {{ post.excerpt }}
+        </div>
+
+      </div>
     {% endfor %}
-  </ul>
 
   <p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | prepend: site.baseurl }}">via RSS</a></p>
-
 </div>
+
+
