@@ -2,7 +2,10 @@
 layout: post
 title:  "Six Favorite Features of ES6 for 2016"
 date:   2015-12-21 23:23:55 
+update_date: 2015-12-26
 categories: javascript es6
+comments: true
+id: 1
 ---
 
 Playing around with react has recently led to a lot of contact with ES6 aka EcmaScript6 aka ES 2015.  Here is a quick introduction to my six favorite features.  The easiest way to play around with ES6 is with [babel](http://babeljs.io/repl/). To actually run the code try [Firefox developer edition's console](https://www.mozilla.org/en-US/firefox/developer/). 
@@ -10,7 +13,7 @@ Playing around with react has recently led to a lot of contact with ES6 aka Ecma
 I'll be briefly covering block scoping, arrow functions, spread operators, object property shorthand, modules, and object destructuring
 
 
-<h3>1. Block Scoping with let and const</h3> JavaScript `var`s are scoped to their containing function.  `let` and `const` are scoped to their containing block.  Block scoping cleans up some global pollution and makes things like using multiple loops a breeze. `const` is also immutable which is great if there is a variable you want to make sure doesn't change.  
+<h3>1. Block Scoping with let and const</h3> JavaScript `var`'s are scoped to their containing function.  `let` and `const` are scoped to their containing block.  Block scoping cleans up some global pollution and makes things such as using multiple loops a breeze. `const` is also immutable which is great if there is a variable you want to make sure doesn't change.  
 
 {% highlight javascript %}
 // Example from MDN
@@ -73,7 +76,7 @@ var obj = {
 console.log(obj.RegularLocation()); //"obj"
 console.log(obj.ArrowLocation()); //"global"
 {% endhighlight %}
-<h3>3. Spread Operator</h3> `...spread` The spread operator allows you to expand an array in place.  This is really useful for combining arrays as well as accepting variable numbers of function arguments.
+<h3>3. Spread Operator</h3> `...spread` The spread operator allows you to expand an array in place.  This is really useful for combining arrays as well as accepting an unknown number of function arguments.
 
 {% highlight javascript %}
 //Example
@@ -92,7 +95,7 @@ var rollcall = function(...animals) {
 rollcall("cat", "dog", "Minature Horse"); // cat Here! dog Here! Minature Horse Here!
 {% endhighlight %}
 
-<h3>4. Object Property Shorthand</h3> This nice little feature allows you to create objects with variables where the variable name is the key and the value is the variable value.  
+<h3>4. Object Property Shorthand</h3> This nice little feature allows you to create objects with variables where the variable name is the key and the value is the variable value.  Sounds so much more complicated than it really is.
 
 {% highlight javascript %}
 var fName = "Big";
@@ -122,7 +125,7 @@ export default function taxCalculator(amount) {
 ////////// main.js //////////
 import taxCal from "./taxCalculator";
 var price = taxCal(2.99);
-console.log(price);
+console.log(price.toFixed(2)); //3.20
 
 {% endhighlight %}
 <h3>6. Object destructuring</h3> With ES6 you can quickly pull out values from an object and set them to a variable with minimal syntax.  The most common use case is when importing multiple things from a module.
@@ -147,4 +150,5 @@ christmas(); // "Merry Christmans"
 festivous(); // "A Festivus for the rest of us!"
 {% endhighlight %}
 
+<h3>Conclusion</h3> Thanks for reading, I hope some of it was helpful.  There are a ton more cool features in ES6 and even from future releases, but I found these were the easiest to start incoporating into code right now.  Check out [http://es6-features.org/](http://es6-features.org/) to see all of the ES6 features along with great examples.
 

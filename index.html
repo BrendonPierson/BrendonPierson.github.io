@@ -12,12 +12,21 @@ title: Posts
             <h2>
               {{ post.title }}
             </h2>
-            <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
+            {% if post.update_date %}
+              Updated: <span class="post-meta">{{ post.update_date | date: "%b %-d, %Y" }}</span>
+            {% else %}
+              <span class="post-meta">{{ post.date | date: "%b %-d, %Y" }}</span>
+            {% endif %}
           </a>
         </div>
 
         <div class="excerpt">
           {{ post.excerpt }}
+
+          <div class="comment-count">
+            <a href="{{ post.url | prepend: site.baseurl }}#disqus_thread"></a>
+            <a href="{{ post.url | prepend: site.baseurl }}">Read more...</a>
+          </div>
         </div>
 
       </div>

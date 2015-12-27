@@ -32,3 +32,13 @@
 .rss-subscribe {
   align-self: flex-end;
 }
+
+#disqus_thread {
+  margin-top: 20px;
+}
+
+.comment-count {
+  display: flex;
+  flex-flow: row-wrap;
+  justify-content: space-between;
+}
