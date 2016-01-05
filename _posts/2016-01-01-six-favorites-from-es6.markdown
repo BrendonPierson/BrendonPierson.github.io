@@ -1,8 +1,8 @@
 ---
 layout: post
 title:  "Six Favorite Features of ES6 for 2016"
-date:   2015-12-21 23:23:55 
-update_date: 2015-12-26
+date:   2016-01-01 23:23:55 
+update_date: 2016-01-01
 categories: javascript es6
 comments: true
 id: 1
