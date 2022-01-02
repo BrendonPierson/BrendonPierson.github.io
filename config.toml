@@ -1,4 +1,4 @@
-baseURL = 'https://brendonpierson.github.io/'
+baseURL = 'https://biersons.com'
 languageCode = 'en-us'
 title = 'Biersons'
 theme = "tale"
