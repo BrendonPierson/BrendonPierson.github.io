@@ -1,0 +1,66 @@
+<!doctype html><html lang=en-us>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<title>TIL Selecting the last item in a postgres array &#183; Biersons</title>
+<link rel=stylesheet href=/css/style.css>
+<link rel=stylesheet href=/css/fonts.css>
+<link rel=icon href=favicon.ico>
+<link rel=icon type=image/png sizes=32x32 href=/images/favicon-32x32.png>
+<link rel=icon type=image/png sizes=16x16 href=/images/favicon-16x16.png>
+<link rel=apple-touch-icon sizes=180x180 href=/images/apple-touch-icon.png>
+<link href rel=alternate type=application/rss+xml title=Biersons>
+</head>
+<body>
+<nav class=nav>
+<div class=nav-container>
+<a href=/>
+<h2 class=nav-title>Biersons</h2>
+</a>
+<ul>
+<li>
+<a href=/about/>
+<span>About</span>
+</a>
+</li>
+<li>
+<a href=/posts/>
+<span>Posts</span>
+</a>
+</li>
+</ul>
+</div>
+</nav>
+<main>
+<div class=post>
+<div class=post-info>
+<span>Written by</span>
+Brendon Pierson
+<br>
+<span>on&nbsp;</span><time datetime="2022-01-10 19:39:41 -0500 -0500">January 10, 2022</time>
+</div>
+<h1 class=post-title>TIL Selecting the last item in a postgres array</h1>
+<div class=post-line></div>
+<p>To get the last item from a postgres array</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sql data-lang=sql><span style=color:#66d9ef>SELECT</span>
+  errors[array_upper(errors, <span style=color:#ae81ff>1</span>)]
+<span style=color:#66d9ef>FROM</span> oban.oban_jobs
+</code></pre></div><p>Oban is a great elixir job processing library. It tracks job attempts and errors with a full stack trace in a postgres <code>errors</code> array column. This is great to have but hard to reason about looking at the giant blob. The above snippet let&rsquo;s you limit it to just the most recent error which is really all you care about.</p>
+<p>The postgresql <code>array_upper</code> function &ldquo;&mldr;Returns the upper bound of the requested array dimension&rdquo;. The first argument is the array and the second is the dimension of the array (starting from 1).</p>
+<pre tabindex=0><code>array_upper ( anyarray, integer ) → integer
+Returns the upper bound of the requested array dimension.
+array_upper(ARRAY[1,8,3,7], 1) → 4'
+</code></pre><p><a href=https://www.postgresql.org/docs/14/functions-array.html>https://www.postgresql.org/docs/14/functions-array.html</a></p>
+</div>
+<div class=pagination>
+<a href=/posts/til-elixir-io-inspect-opts/ class="left arrow">&#8592;</a>
+<a href=# class=top>Top</a>
+</div>
+</main>
+<footer>
+<span>
+&copy; <time datetime="2022-02-02 14:39:58.266614445 +0000 UTC m=+0.048204950">2022</time> Brendon Pierson. Made with <a href=https://gohugo.io>Hugo</a> using the <a href=https://github.com/EmielH/tale-hugo/>Tale</a> theme.
+</span>
+</footer>
+</body>
+</html>
