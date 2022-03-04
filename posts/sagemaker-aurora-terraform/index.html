@@ -1,0 +1,146 @@
+<!doctype html><html lang=en-us>
+<head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<title>Sagemaker Aurora Postgres Terraform &#183; Biersons</title><link rel=stylesheet href=/css/style.css>
+<link rel=stylesheet href=/css/fonts.css>
+<link rel=icon href=favicon.ico>
+<link rel=icon type=image/png sizes=32x32 href=/images/favicon-32x32.png>
+<link rel=icon type=image/png sizes=16x16 href=/images/favicon-16x16.png>
+<link rel=apple-touch-icon sizes=180x180 href=/images/apple-touch-icon.png>
+<link href rel=alternate type=application/rss+xml title=Biersons>
+</head><body>
+<nav class=nav>
+<div class=nav-container>
+<a href=/>
+<h2 class=nav-title>Biersons</h2></a>
+<ul>
+<li>
+<a href=/about/>
+<span>About</span>
+</a>
+</li><li>
+<a href=/posts/>
+<span>Posts</span>
+</a>
+</li></ul></div></nav><main>
+<div class=post>
+<div class=post-info>
+<span>Written by</span>
+Brendon Pierson
+<br>
+<span>on&nbsp;</span><time datetime="2022-03-03 18:16:54 -0500 -0500">March 3, 2022</time>
+</div><h1 class=post-title>Sagemaker Aurora Postgres Terraform</h1><div class=post-line></div><p>This post will outline a minimal end to end sagemaker setup using terraform. This setup includes setting up the sagemaker domain, notebook instance, endpoint, and all the associated roles and policies. At the end of this post you should have a trained sagemaker model deployed that can be accessed through an aurora postgres stored procedure call. How cool is that.</p><h3 id=outline>Outline</h3><ol>
+<li><a href=#setup-the-sagemaker-domain>Setup sagemaker domain</a></li><li><a href=#setup-the-sagemaker-notebook-instance>Setup sagemaker notebook instance</a></li><li><a href=#notebook-instance-iam-roles-and-policies>Notebook instance IAM Roles and Policies</a></li><li><a href=#aurora-postgres-iam-roles-and-policies>Aurora Postgres IAM Roles and Policies</a></li></ol><h3 id=setup-the-sagemaker-domain>Setup the sagemaker domain</h3><blockquote>
+<p>An Amazon SageMaker Domain consists of an associated Amazon Elastic File System (Amazon EFS) volume; a list of authorized users; and a variety of security, application, policy, and Amazon Virtual Private Cloud (Amazon VPC) configurations.</p></blockquote><p>The domain setup was actually fairly straight forward. All of the fields listed below are required. I prefixed mosted of the role, policy, and resource names with <code>ex</code> for <code>example</code>. In the below snippet you can chose you&rsquo;re own domain_name and the vpc_id and subnet_ids will need to be specific to your setup. You can also pick the execution rule but it will need to match what we do later in the roles section.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-hcl data-lang=hcl><span style=display:flex><span><span style=color:#66d9ef>resource</span> <span style=color:#e6db74>&#34;aws_sagemaker_domain&#34; &#34;ex-sagemaker&#34;</span> {
+</span></span><span style=display:flex><span>  domain_name <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;ex-sagemaker&#34;</span>
+</span></span><span style=display:flex><span>  auth_mode   <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;IAM&#34;</span>
+</span></span><span style=display:flex><span>  vpc_id      <span style=color:#f92672>=</span> <span style=color:#66d9ef>module</span>.<span style=color:#66d9ef>base</span>.<span style=color:#66d9ef>vpc_id</span>
+</span></span><span style=display:flex><span>  subnet_ids  <span style=color:#f92672>=</span> <span style=color:#66d9ef>module</span>.<span style=color:#66d9ef>base</span>.<span style=color:#66d9ef>private_subnets</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>default_user_settings</span> {
+</span></span><span style=display:flex><span>    execution_role <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_iam_role</span>.<span style=color:#66d9ef>ex</span><span style=color:#960050;background-color:#1e0010>-</span><span style=color:#66d9ef>sagemaker</span>.<span style=color:#66d9ef>arn</span>
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h3 id=setup-the-sagemaker-notebook-instance>Setup the sagemaker notebook instance</h3><p>The notebook instance is a server that will run jupyter notebooks for you. I also have listed a github repo that will be the directory where the notebook spins up. The repo part is optional, feel free to leave off the first resource block and the default_code_repository in the second block. Again you can chose any name, the role_arn must match the role used in the domain. The security groups need to have a security group that can hit postgres for the later steps. The direct internet access can be enabled if you do not have a NAT for your VPC.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-hcl data-lang=hcl><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>resource</span> <span style=color:#e6db74>&#34;aws_sagemaker_code_repository&#34; &#34;ex-sagemaker-data-analytics-repo&#34;</span> {
+</span></span><span style=display:flex><span>  code_repository_name <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;data-analytics&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>git_config</span> {
+</span></span><span style=display:flex><span>    repository_url <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;https://github.com/my-repositories/data-analytics.git&#34;</span>
+</span></span><span style=display:flex><span>    secret_arn <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;arn:aws:secretsmanager:us-east-1:996471257056:secret:AmazonSageMaker-example-system-gh-user-gyCE67&#34;</span>
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>resource</span> <span style=color:#e6db74>&#34;aws_sagemaker_notebook_instance&#34; &#34;ex-notebook-instance-bp&#34;</span> {
+</span></span><span style=display:flex><span>  name                    <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;ex-notebook-instance&#34;</span>
+</span></span><span style=display:flex><span>  role_arn                <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_iam_role</span>.<span style=color:#66d9ef>ex</span><span style=color:#960050;background-color:#1e0010>-</span><span style=color:#66d9ef>sagemaker</span>.<span style=color:#66d9ef>arn</span>
+</span></span><span style=display:flex><span>  instance_type           <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;ml.c5.xlarge&#34;</span>
+</span></span><span style=display:flex><span>  default_code_repository <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_sagemaker_code_repository</span>.<span style=color:#66d9ef>ex</span><span style=color:#960050;background-color:#1e0010>-</span><span style=color:#66d9ef>sagemaker</span><span style=color:#960050;background-color:#1e0010>-</span><span style=color:#66d9ef>data</span><span style=color:#960050;background-color:#1e0010>-</span><span style=color:#66d9ef>analytics</span><span style=color:#960050;background-color:#1e0010>-</span><span style=color:#66d9ef>repo</span>.<span style=color:#66d9ef>code_repository_name</span>
+</span></span><span style=display:flex><span>  platform_identifier     <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;notebook-al2-v1&#34;</span>
+</span></span><span style=display:flex><span>  security_groups         <span style=color:#f92672>=</span> [<span style=color:#66d9ef>module</span>.<span style=color:#66d9ef>security</span><span style=color:#960050;background-color:#1e0010>-</span><span style=color:#66d9ef>group</span><span style=color:#960050;background-color:#1e0010>-</span><span style=color:#66d9ef>with</span><span style=color:#960050;background-color:#1e0010>-</span><span style=color:#66d9ef>access</span><span style=color:#960050;background-color:#1e0010>-</span><span style=color:#66d9ef>to</span><span style=color:#960050;background-color:#1e0010>-</span><span style=color:#66d9ef>aurora</span><span style=color:#960050;background-color:#1e0010>-</span><span style=color:#66d9ef>postgres</span>.<span style=color:#66d9ef>security_group_id</span>]
+</span></span><span style=display:flex><span>  subnet_id               <span style=color:#f92672>=</span> <span style=color:#66d9ef>element</span>(<span style=color:#66d9ef>module</span>.<span style=color:#66d9ef>base</span>.<span style=color:#66d9ef>private_subnets</span>, <span style=color:#ae81ff>0</span>)
+</span></span><span style=display:flex><span>  direct_internet_access  <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;Disabled&#34;</span>
+</span></span><span style=display:flex><span>  volume_size             <span style=color:#f92672>=</span> <span style=color:#ae81ff>100</span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h3 id=notebook-instance-iam-roles-and-policies>Notebook instance IAM Roles and Policies</h3><p>First create a policy that gives the sagemaker service assume role.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-hcl data-lang=hcl><span style=display:flex><span><span style=color:#66d9ef>data</span> <span style=color:#e6db74>&#34;aws_iam_policy_document&#34; &#34;sagemaker_assume_role_policy&#34;</span> {
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>statement</span> {
+</span></span><span style=display:flex><span>    actions <span style=color:#f92672>=</span> [<span style=color:#e6db74>&#34;sts:AssumeRole&#34;</span>]
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>principals</span> {
+</span></span><span style=display:flex><span>      type        <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;Service&#34;</span>
+</span></span><span style=display:flex><span>      identifiers <span style=color:#f92672>=</span> [<span style=color:#e6db74>&#34;sagemaker.amazonaws.com&#34;</span>]
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Then create the iam role and attach the assume role policy. This role name must match what you&rsquo;ve used in the steps above.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-hcl data-lang=hcl><span style=display:flex><span><span style=color:#66d9ef>resource</span> <span style=color:#e6db74>&#34;aws_iam_role&#34; &#34;ex-sagemaker&#34;</span> {
+</span></span><span style=display:flex><span>  name               <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;ex-sagemaker&#34;</span>
+</span></span><span style=display:flex><span>  assume_role_policy <span style=color:#f92672>=</span> <span style=color:#66d9ef>data</span>.<span style=color:#66d9ef>aws_iam_policy_document</span>.<span style=color:#66d9ef>sagemaker_assume_role_policy</span>.<span style=color:#66d9ef>json</span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Additionally we&rsquo;ll need to attach the AmazonSageMakerFullAccess policy to the role</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-hcl data-lang=hcl><span style=display:flex><span><span style=color:#66d9ef>resource</span> <span style=color:#e6db74>&#34;aws_iam_role_policy_attachment&#34; &#34;sagemaker_full_access&#34;</span> {
+</span></span><span style=display:flex><span>  role       <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_iam_role</span>.<span style=color:#66d9ef>ex</span><span style=color:#960050;background-color:#1e0010>-</span><span style=color:#66d9ef>sagemaker</span>.<span style=color:#66d9ef>name</span>
+</span></span><span style=display:flex><span>  policy_arn <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;arn:aws:iam::aws:policy/AmazonSageMakerFullAccess&#34;</span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>That takes care of the basics for what you&rsquo;d need to run the notebook instance, train models, deploy endpoints etc.</p><h3 id=aurora-postgres-iam-roles-and-policies>Aurora Postgres IAM Roles and Policies</h3><p>The following is needed to access the deployed endpoint from aurora postgres.</p><p>First create a new IAM role with assumeRole capabilities.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-hcl data-lang=hcl><span style=display:flex><span><span style=color:#66d9ef>resource</span> <span style=color:#e6db74>&#34;aws_iam_role&#34; &#34;ex-aurora-sagemaker&#34;</span> {
+</span></span><span style=display:flex><span>  name <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;ex-aurora-sagemaker&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  assume_role_policy <span style=color:#f92672>=</span> <span style=color:#960050;background-color:#1e0010>&lt;&lt;</span><span style=color:#66d9ef>EOF</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>  <span style=color:#e6db74>&#34;Version&#34;: &#34;2012-10-17&#34;</span>,
+</span></span><span style=display:flex><span>  <span style=color:#e6db74>&#34;Statement&#34;</span><span style=color:#960050;background-color:#1e0010>:</span> [
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>      <span style=color:#e6db74>&#34;Action&#34;: &#34;sts:AssumeRole&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#e6db74>&#34;Effect&#34;: &#34;Allow&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#e6db74>&#34;Principal&#34;</span><span style=color:#960050;background-color:#1e0010>:</span> {
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;Service&#34;: &#34;rds.amazonaws.com&#34;</span>
+</span></span><span style=display:flex><span>      }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>  ]
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span><span style=color:#66d9ef>EOF</span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Create a IAM policy that gives the role we just create the ability to invoke sagemaker endpoints.</p><h4 id=note-region-and-account-number-were-required-to-be-hardcoded-in-the-resource-arn>Note: region and account number were required to be hardcoded in the resource arn!</h4><p>This is a pain when trying to make reusable terraform but I couldn&rsquo;t find a workaround. Swap us-east-1 and 996471257056 for your region and account number.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-hcl data-lang=hcl><span style=display:flex><span><span style=color:#66d9ef>resource</span> <span style=color:#e6db74>&#34;aws_iam_policy&#34; &#34;aurora_sagemaker_endpoint_policy&#34;</span> {
+</span></span><span style=display:flex><span>  name        <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;aurora_sagemaker_endpoint_policy&#34;</span>
+</span></span><span style=display:flex><span>  description <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;Allows us to run sagemaker models from the database&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  policy <span style=color:#f92672>=</span> <span style=color:#960050;background-color:#1e0010>&lt;&lt;</span><span style=color:#66d9ef>EOF</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>  <span style=color:#e6db74>&#34;Version&#34;: &#34;2012-10-17&#34;</span>,
+</span></span><span style=display:flex><span>  <span style=color:#e6db74>&#34;Statement&#34;</span><span style=color:#960050;background-color:#1e0010>:</span> [
+</span></span><span style=display:flex><span>  {
+</span></span><span style=display:flex><span>      <span style=color:#e6db74>&#34;Sid&#34;: &#34;AllowAuroraToInvokeRCFEndPoint&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#e6db74>&#34;Effect&#34;: &#34;Allow&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#e6db74>&#34;Action&#34;</span><span style=color:#960050;background-color:#1e0010>:</span> [
+</span></span><span style=display:flex><span>          <span style=color:#e6db74>&#34;sagemaker:InvokeEndpoint&#34;</span>
+</span></span><span style=display:flex><span>     ],
+</span></span><span style=display:flex><span>      <span style=color:#e6db74>&#34;Resource&#34;</span><span style=color:#960050;background-color:#1e0010>:</span> [
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#34;arn:aws:sagemaker:us-east-1:996471257056:endpoint/*&#34;</span>
+</span></span><span style=display:flex><span>      ]
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>  ]
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span><span style=color:#66d9ef>EOF</span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Attach the invoke endpoint policy to the role we created.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-hcl data-lang=hcl><span style=display:flex><span><span style=color:#66d9ef>resource</span> <span style=color:#e6db74>&#34;aws_iam_role_policy_attachment&#34; &#34;ex-aurora-sagemaker-at-pol&#34;</span> {
+</span></span><span style=display:flex><span>  role       <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_iam_role</span>.<span style=color:#66d9ef>ex</span><span style=color:#960050;background-color:#1e0010>-</span><span style=color:#66d9ef>aurora</span><span style=color:#960050;background-color:#1e0010>-</span><span style=color:#66d9ef>sagemaker</span>.<span style=color:#66d9ef>name</span>
+</span></span><span style=display:flex><span>  policy_arn <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_iam_policy</span>.<span style=color:#66d9ef>aurora_sagemaker_endpoint_policy</span>.<span style=color:#66d9ef>arn</span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Associate the role we created with the db cluster.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-hcl data-lang=hcl><span style=display:flex><span><span style=color:#66d9ef>data</span> <span style=color:#e6db74>&#34;aws_rds_cluster&#34; &#34;ex-prd-analytics&#34;</span> {
+</span></span><span style=display:flex><span>  cluster_identifier <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;ex-prd-analytics&#34;</span>
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>resource</span> <span style=color:#e6db74>&#34;aws_rds_cluster_role_association&#34; &#34;ex-rds-cluster-sagemaker-assoc&#34;</span> {
+</span></span><span style=display:flex><span>  db_cluster_identifier <span style=color:#f92672>=</span> <span style=color:#66d9ef>data</span>.<span style=color:#66d9ef>aws_rds_cluster</span>.<span style=color:#66d9ef>ex</span><span style=color:#960050;background-color:#1e0010>-</span><span style=color:#66d9ef>prd</span><span style=color:#960050;background-color:#1e0010>-</span><span style=color:#66d9ef>analytics</span>.<span style=color:#66d9ef>id</span>
+</span></span><span style=display:flex><span>  feature_name          <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;SageMaker&#34;</span>
+</span></span><span style=display:flex><span>  role_arn              <span style=color:#f92672>=</span> <span style=color:#66d9ef>aws_iam_role</span>.<span style=color:#66d9ef>ex</span><span style=color:#960050;background-color:#1e0010>-</span><span style=color:#66d9ef>aurora</span><span style=color:#960050;background-color:#1e0010>-</span><span style=color:#66d9ef>sagemaker</span>.<span style=color:#66d9ef>arn</span>
+</span></span><span style=display:flex><span>}<span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>###
+</span></span></span></code></pre></div><p>That should get you bootstrapped to start training and deploying models from the notebook instance and running inference from the aurora postgres <code>aws_ml</code> extension.
+Check out <a href=https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/postgresql-ml.html>https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/postgresql-ml.html</a> for more details on the actual training and calling of the endpoint.</p><p>One thing to note, the stored procedure <code>aws_sagemaker.invoke_endpoint</code> can be called in two ways. Both ways the first two arguments are endpoint name and batch size. Then the third argument can either be an array of each feature or you can specify each feature as arguments 3&mldr;n_features but be wary of the 100 parameter limit in postgres.</p></div><div class=pagination>
+<a href=/posts/til-postgres-last-array-item/ class="left arrow">&#8592;</a>
+<a href=# class=top>Top</a>
+</div></main><footer>
+<span>
+&copy; <time datetime="2022-03-04 13:58:26.121438124 +0000 UTC m=+0.043822697">2022</time> Brendon Pierson. Made with <a href=https://gohugo.io>Hugo</a> using the <a href=https://github.com/EmielH/tale-hugo/>Tale</a> theme.
+</span>
+</footer></body></html>

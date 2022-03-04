@@ -2,58 +2,40 @@
 <head>
 <meta charset=utf-8>
 <meta name=viewport content="width=device-width,initial-scale=1">
-<title>Querying &#183; Biersons</title>
-<link rel=stylesheet href=/css/style.css>
+<title>Querying &#183; Biersons</title><link rel=stylesheet href=/css/style.css>
 <link rel=stylesheet href=/css/fonts.css>
 <link rel=icon href=favicon.ico>
 <link rel=icon type=image/png sizes=32x32 href=/images/favicon-32x32.png>
 <link rel=icon type=image/png sizes=16x16 href=/images/favicon-16x16.png>
 <link rel=apple-touch-icon sizes=180x180 href=/images/apple-touch-icon.png>
 <link href=/tags/querying/index.xml rel=alternate type=application/rss+xml title=Biersons>
-</head>
-<body>
+</head><body>
 <nav class=nav>
 <div class=nav-container>
 <a href=/>
-<h1 class=nav-title>Biersons</h1>
-</a>
+<h1 class=nav-title>Biersons</h1></a>
 <ul>
 <li>
 <a href=/about/>
 <span>About</span>
 </a>
-</li>
-<li>
+</li><li>
 <a href=/posts/>
 <span>Posts</span>
 </a>
-</li>
-</ul>
-</div>
-</nav>
-<main>
-<h1>Tag Querying</h1>
-<div class=catalogue>
+</li></ul></div></nav><main>
+<h1>Tag Querying</h1><div class=catalogue>
 <a href=https://biersons.com/posts/til-postgres-last-array-item/ class=catalogue-item>
 <div>
 <time datetime="2022-01-10 19:39:41 -0500 -0500" class=catalogue-time>January 10, 2022</time>
-<h2 class=catalogue-title>TIL Selecting the last item in a postgres array</h2>
-<div class=catalogue-line></div>
-<p>
+<h2 class=catalogue-title>TIL Selecting the last item in a postgres array</h2><div class=catalogue-line></div><p>
 To get the last item from a postgres array
 SELECT errors[array_upper(errors, 1)] FROM oban.oban_jobs Oban is a great elixir job processing library. It tracks job attempts and errors with a full stack trace in a postgres errors array column. This is great to have but hard to reason about looking at the giant blob. The above snippet let&rsquo;s you limit it to just the most recent error which is really all you care about.
-</p>
-</div>
-</a>
-</div>
-<div class=pagination>
+</p></div></a>
+</div><div class=pagination>
 <span>1</span>
-</div>
-</main>
-<footer>
+</div></main><footer>
 <span>
-&copy; <time datetime="2022-02-02 14:39:58.279281873 +0000 UTC m=+0.060872278">2022</time> Brendon Pierson. Made with <a href=https://gohugo.io>Hugo</a> using the <a href=https://github.com/EmielH/tale-hugo/>Tale</a> theme.
+&copy; <time datetime="2022-03-04 13:58:26.134130852 +0000 UTC m=+0.056515425">2022</time> Brendon Pierson. Made with <a href=https://gohugo.io>Hugo</a> using the <a href=https://github.com/EmielH/tale-hugo/>Tale</a> theme.
 </span>
-</footer>
-</body>
-</html>
+</footer></body></html>

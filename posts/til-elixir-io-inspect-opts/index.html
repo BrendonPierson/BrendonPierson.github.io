@@ -2,68 +2,40 @@
 <head>
 <meta charset=utf-8>
 <meta name=viewport content="width=device-width,initial-scale=1">
-<title>TIL Elixir - Inspect.Opts, deep cuts &#183; Biersons</title>
-<link rel=stylesheet href=/css/style.css>
+<title>TIL Elixir - Inspect.Opts, deep cuts &#183; Biersons</title><link rel=stylesheet href=/css/style.css>
 <link rel=stylesheet href=/css/fonts.css>
 <link rel=icon href=favicon.ico>
 <link rel=icon type=image/png sizes=32x32 href=/images/favicon-32x32.png>
 <link rel=icon type=image/png sizes=16x16 href=/images/favicon-16x16.png>
 <link rel=apple-touch-icon sizes=180x180 href=/images/apple-touch-icon.png>
 <link href rel=alternate type=application/rss+xml title=Biersons>
-</head>
-<body>
+</head><body>
 <nav class=nav>
 <div class=nav-container>
 <a href=/>
-<h2 class=nav-title>Biersons</h2>
-</a>
+<h2 class=nav-title>Biersons</h2></a>
 <ul>
 <li>
 <a href=/about/>
 <span>About</span>
 </a>
-</li>
-<li>
+</li><li>
 <a href=/posts/>
 <span>Posts</span>
 </a>
-</li>
-</ul>
-</div>
-</nav>
-<main>
+</li></ul></div></nav><main>
 <div class=post>
 <div class=post-info>
 <span>Written by</span>
 Brendon Pierson
 <br>
 <span>on&nbsp;</span><time datetime="2022-01-02 13:02:35 -0500 -0500">January 2, 2022</time>
-</div>
-<h1 class=post-title>TIL Elixir - Inspect.Opts, deep cuts</h1>
-<div class=post-line></div>
-<p>Since the day I started picking up elixir I&rsquo;ve been using <code>IO.inspect/2</code>&rsquo;s to debug and check code outputs. Because it will return whatever its passed, you can paste <code>|> IO.inspect()</code>&rsquo;s pretty much anywhere without changing the program. Even though I&rsquo;ve been using this for years I recently learned about some new options to fine tune the inspect behavior.</p>
-<p>See all the options here: <a href=https://hexdocs.pm/elixir/Inspect.Opts.html>https://hexdocs.pm/elixir/Inspect.Opts.html</a></p>
-<h3 id=options-i-have-pretty-much-always-used>Options I have pretty much always used</h3>
-<p><code>:label</code></p>
-<p>This helps differentiate multiple <code>IO.inspect</code>&rsquo;s. It&rsquo;s pretty common to look over my shoulder and see <code>|> IO.inspect(label: :here_1)</code>, <code>|> IO.inspect(label: :here_2)</code>, <code>|> IO.inspect(label: :here_3)</code> scattered about.</p>
-<p><code>:limit</code></p>
-<p>I almost always set this to show everything, <code>limit: :infintiy</code>. Specifically it set&rsquo;s the limits to the number of items that are shown in a collection.</p>
-<h3 id=new-options-inspiring-this-post>New Options inspiring this post</h3>
-<p><code>:syntax_colors</code></p>
-<p>The <code>:syntax_colors</code> option allows you to change the display color of each data type. I used this to add some extra visibility when I&rsquo;m connecting to a production environment locally: <code>IO.inspect("PRODUCTION ENVIRONMENT", syntax_colors: [string: :red])</code></p>
-<p><code>:printable_limit</code></p>
-<p>This week I had a large generated query that I wanted to print out so that I could paste it in datagrip and debug the results. It was a big query so I went with <code>IO.inspect(big_query, limit: :infinity, label: :big_query)</code>. No matter how many times I recompiled though the query was truncated. That&rsquo;s when google led me to the <code>Inspect.Opts</code> and <code>printable_limit</code>. <code>IO.inspect(big_query, pritable_limit: :infinity)</code> was the ticket. By default the output of large strings is truncated to 4096 characters. TIL</p>
-</div>
-<div class=pagination>
+</div><h1 class=post-title>TIL Elixir - Inspect.Opts, deep cuts</h1><div class=post-line></div><p>Since the day I started picking up elixir I&rsquo;ve been using <code>IO.inspect/2</code>&rsquo;s to debug and check code outputs. Because it will return whatever its passed, you can paste <code>|> IO.inspect()</code>&rsquo;s pretty much anywhere without changing the program. Even though I&rsquo;ve been using this for years I recently learned about some new options to fine tune the inspect behavior.</p><p>See all the options here: <a href=https://hexdocs.pm/elixir/Inspect.Opts.html>https://hexdocs.pm/elixir/Inspect.Opts.html</a></p><h3 id=options-i-have-pretty-much-always-used>Options I have pretty much always used</h3><p><code>:label</code></p><p>This helps differentiate multiple <code>IO.inspect</code>&rsquo;s. It&rsquo;s pretty common to look over my shoulder and see <code>|> IO.inspect(label: :here_1)</code>, <code>|> IO.inspect(label: :here_2)</code>, <code>|> IO.inspect(label: :here_3)</code> scattered about.</p><p><code>:limit</code></p><p>I almost always set this to show everything, <code>limit: :infintiy</code>. Specifically it set&rsquo;s the limits to the number of items that are shown in a collection.</p><h3 id=new-options-inspiring-this-post>New Options inspiring this post</h3><p><code>:syntax_colors</code></p><p>The <code>:syntax_colors</code> option allows you to change the display color of each data type. I used this to add some extra visibility when I&rsquo;m connecting to a production environment locally: <code>IO.inspect("PRODUCTION ENVIRONMENT", syntax_colors: [string: :red])</code></p><p><code>:printable_limit</code></p><p>This week I had a large generated query that I wanted to print out so that I could paste it in datagrip and debug the results. It was a big query so I went with <code>IO.inspect(big_query, limit: :infinity, label: :big_query)</code>. No matter how many times I recompiled though the query was truncated. That&rsquo;s when google led me to the <code>Inspect.Opts</code> and <code>printable_limit</code>. <code>IO.inspect(big_query, pritable_limit: :infinity)</code> was the ticket. By default the output of large strings is truncated to 4096 characters. TIL</p></div><div class=pagination>
 <a href=/about/ class="left arrow">&#8592;</a>
 <a href=/posts/til-postgres-last-array-item/ class="right arrow">&#8594;</a>
 <a href=# class=top>Top</a>
-</div>
-</main>
-<footer>
+</div></main><footer>
 <span>
-&copy; <time datetime="2022-02-02 14:39:58.264455789 +0000 UTC m=+0.046046294">2022</time> Brendon Pierson. Made with <a href=https://gohugo.io>Hugo</a> using the <a href=https://github.com/EmielH/tale-hugo/>Tale</a> theme.
+&copy; <time datetime="2022-03-04 13:58:26.116083013 +0000 UTC m=+0.038467686">2022</time> Brendon Pierson. Made with <a href=https://gohugo.io>Hugo</a> using the <a href=https://github.com/EmielH/tale-hugo/>Tale</a> theme.
 </span>
-</footer>
-</body>
-</html>
+</footer></body></html>
