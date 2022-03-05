@@ -2,6 +2,7 @@ baseURL = 'https://biersons.com'
 languageCode = 'en-us'
 title = 'Biersons'
 theme = "tale"
+googleAnalytics = 'G-F1YSMHGEC0'
 
 [Author]
     name = "Brendon Pierson"
