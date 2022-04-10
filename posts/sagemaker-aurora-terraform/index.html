@@ -1,42 +1,6 @@
-<!doctype html><html lang=en-us>
-<head>
-<script type=application/javascript>var doNotTrack=!1;doNotTrack||(window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga("create","G-F1YSMHGEC0","auto"),ga("send","pageview"))</script>
-<script async src=https://www.google-analytics.com/analytics.js></script>
-<meta charset=utf-8>
-<meta name=viewport content="width=device-width,initial-scale=1">
-<title>Sagemaker Aurora Postgres Terraform &#183; Biersons</title><link rel=stylesheet href=/css/style.css>
-<link rel=stylesheet href=/css/fonts.css>
-<link rel=icon href=favicon.ico>
-<link rel=icon type=image/png sizes=32x32 href=/images/favicon-32x32.png>
-<link rel=icon type=image/png sizes=16x16 href=/images/favicon-16x16.png>
-<link rel=apple-touch-icon sizes=180x180 href=/images/apple-touch-icon.png>
-<link href rel=alternate type=application/rss+xml title=Biersons>
-</head><body>
-<nav class=nav>
-<div class=nav-container>
-<a href=/>
-<h2 class=nav-title>Biersons</h2></a>
-<ul>
-<li>
-<a href=/about/>
-<span>About</span>
-</a>
-</li><li>
-<a href=/posts/>
-<span>Posts</span>
-</a>
-</li></ul></div></nav><main>
-<div class=post>
-<div class=post-info>
-<span>Written by</span>
-Brendon Pierson
-<br>
-<span>on&nbsp;</span><time datetime="2022-03-03 18:16:54 -0500 -0500">March 3, 2022</time>
-</div><h1 class=post-title>Sagemaker Aurora Postgres Terraform</h1><div class=post-line></div><script async src="https://www.googletagmanager.com/gtag/js?id=G-F1YSMHGEC0"></script>
-<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-F1YSMHGEC0",{anonymize_ip:!1})}</script>
-<p>This post will outline a minimal end to end sagemaker setup using terraform. This setup includes setting up the sagemaker domain, notebook instance, endpoint, and all the associated roles and policies. At the end of this post you should have a trained sagemaker model deployed that can be accessed through an aurora postgres stored procedure call. How cool is that.</p><h3 id=outline>Outline</h3><ol>
-<li><a href=#setup-the-sagemaker-domain>Setup sagemaker domain</a></li><li><a href=#setup-the-sagemaker-notebook-instance>Setup sagemaker notebook instance</a></li><li><a href=#notebook-instance-iam-roles-and-policies>Notebook instance IAM Roles and Policies</a></li><li><a href=#aurora-postgres-iam-roles-and-policies>Aurora Postgres IAM Roles and Policies</a></li></ol><h3 id=setup-the-sagemaker-domain>Setup the sagemaker domain</h3><blockquote>
-<p>An Amazon SageMaker Domain consists of an associated Amazon Elastic File System (Amazon EFS) volume; a list of authorized users; and a variety of security, application, policy, and Amazon Virtual Private Cloud (Amazon VPC) configurations.</p></blockquote><p>The domain setup was actually fairly straight forward. All of the fields listed below are required. I prefixed mosted of the role, policy, and resource names with <code>ex</code> for <code>example</code>. In the below snippet you can chose you&rsquo;re own domain_name and the vpc_id and subnet_ids will need to be specific to your setup. You can also pick the execution rule but it will need to match what we do later in the roles section.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-hcl data-lang=hcl><span style=display:flex><span><span style=color:#66d9ef>resource</span> <span style=color:#e6db74>&#34;aws_sagemaker_domain&#34; &#34;ex-sagemaker&#34;</span> {
+<!doctype html><html lang=en-us><head><script type=application/javascript>var doNotTrack=!1;doNotTrack||(window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga("create","G-F1YSMHGEC0","auto"),ga("send","pageview"))</script><script async src=https://www.google-analytics.com/analytics.js></script><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Sagemaker Aurora Postgres Terraform &#183; Biersons</title><link rel=stylesheet href=/css/style.css><link rel=stylesheet href=/css/fonts.css><link rel=icon href=favicon.ico><link rel=icon type=image/png sizes=32x32 href=/images/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/images/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/images/apple-touch-icon.png><link href rel=alternate type=application/rss+xml title=Biersons></head><body><nav class=nav><div class=nav-container><a href=/><h2 class=nav-title>Biersons</h2></a><ul><li><a href=/about/><span>About</span></a></li><li><a href=/posts/><span>Posts</span></a></li></ul></div></nav><main><div class=post><div class=post-info><span>Written by</span>
+Brendon Pierson<br><span>on&nbsp;</span><time datetime="2022-03-03 18:16:54 -0500 -0500">March 3, 2022</time></div><h1 class=post-title>Sagemaker Aurora Postgres Terraform</h1><div class=post-line></div><script async src="https://www.googletagmanager.com/gtag/js?id=G-F1YSMHGEC0"></script>
+<script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-F1YSMHGEC0",{anonymize_ip:!1})}</script><p>This post will outline a minimal end to end sagemaker setup using terraform. This setup includes setting up the sagemaker domain, notebook instance, endpoint, and all the associated roles and policies. At the end of this post you should have a trained sagemaker model deployed that can be accessed through an aurora postgres stored procedure call. How cool is that.</p><h3 id=outline>Outline</h3><ol><li><a href=#setup-the-sagemaker-domain>Setup sagemaker domain</a></li><li><a href=#setup-the-sagemaker-notebook-instance>Setup sagemaker notebook instance</a></li><li><a href=#notebook-instance-iam-roles-and-policies>Notebook instance IAM Roles and Policies</a></li><li><a href=#aurora-postgres-iam-roles-and-policies>Aurora Postgres IAM Roles and Policies</a></li></ol><h3 id=setup-the-sagemaker-domain>Setup the sagemaker domain</h3><blockquote><p>An Amazon SageMaker Domain consists of an associated Amazon Elastic File System (Amazon EFS) volume; a list of authorized users; and a variety of security, application, policy, and Amazon Virtual Private Cloud (Amazon VPC) configurations.</p></blockquote><p>The domain setup was actually fairly straight forward. All of the fields listed below are required. I prefixed mosted of the role, policy, and resource names with <code>ex</code> for <code>example</code>. In the below snippet you can chose you&rsquo;re own domain_name and the vpc_id and subnet_ids will need to be specific to your setup. You can also pick the execution rule but it will need to match what we do later in the roles section.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-hcl data-lang=hcl><span style=display:flex><span><span style=color:#66d9ef>resource</span> <span style=color:#e6db74>&#34;aws_sagemaker_domain&#34; &#34;ex-sagemaker&#34;</span> {
 </span></span><span style=display:flex><span>  domain_name <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;ex-sagemaker&#34;</span>
 </span></span><span style=display:flex><span>  auth_mode   <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;IAM&#34;</span>
 </span></span><span style=display:flex><span>  vpc_id      <span style=color:#f92672>=</span> <span style=color:#66d9ef>module</span>.<span style=color:#66d9ef>base</span>.<span style=color:#66d9ef>vpc_id</span>
@@ -140,11 +104,5 @@ Brendon Pierson
 </span></span><span style=display:flex><span>}<span style=color:#75715e>
 </span></span></span><span style=display:flex><span><span style=color:#75715e>###
 </span></span></span></code></pre></div><p>That should get you bootstrapped to start training and deploying models from the notebook instance and running inference from the aurora postgres <code>aws_ml</code> extension.
-Check out <a href=https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/postgresql-ml.html>https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/postgresql-ml.html</a> for more details on the actual training and calling of the endpoint.</p><p>One thing to note, the stored procedure <code>aws_sagemaker.invoke_endpoint</code> can be called in two ways. Both ways the first two arguments are endpoint name and batch size. Then the third argument can either be an array of each feature or you can specify each feature as arguments 3&mldr;n_features but be wary of the 100 parameter limit in postgres.</p></div><div class=pagination>
-<a href=/posts/til-postgres-last-array-item/ class="left arrow">&#8592;</a>
-<a href=# class=top>Top</a>
-</div></main><footer>
-<span>
-&copy; <time datetime="2022-03-05 13:08:28.087473549 +0000 UTC m=+0.060082726">2022</time> Brendon Pierson. Made with <a href=https://gohugo.io>Hugo</a> using the <a href=https://github.com/EmielH/tale-hugo/>Tale</a> theme.
-</span>
-</footer></body></html>
+Check out <a href=https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/postgresql-ml.html>https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/postgresql-ml.html</a> for more details on the actual training and calling of the endpoint.</p><p>One thing to note, the stored procedure <code>aws_sagemaker.invoke_endpoint</code> can be called in two ways. Both ways the first two arguments are endpoint name and batch size. Then the third argument can either be an array of each feature or you can specify each feature as arguments 3&mldr;n_features but be wary of the 100 parameter limit in postgres.</p></div><div class=pagination><a href=/posts/til-postgres-last-array-item/ class="left arrow">&#8592;</a>
+<a href=# class=top>Top</a></div></main><footer><span>&copy; <time datetime="2022-04-10 15:01:31.186292369 +0000 UTC m=+0.050400761">2022</time> Brendon Pierson. Made with <a href=https://gohugo.io>Hugo</a> using the <a href=https://github.com/EmielH/tale-hugo/>Tale</a> theme.</span></footer></body></html>
