@@ -1,7 +1,7 @@
 ---
 title: "DISTINCT FROM to compare NULL-able values in Postgres"
 date: 2022-12-19T06:45:24-05:00
-draft: true
+draft: false
 categories: ['Tech']
 tags: ['Postgresql', 'TIL', 'Querying']
 ---
